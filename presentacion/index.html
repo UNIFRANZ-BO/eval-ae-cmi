@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cuadro de Mando Integral · Administración Estratégica · UNIFRANZ</title>
+<style>
+:root{
+  --bg:#050713; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.1); --borde:rgba(255,255,255,.16);
+  --tx:#f2f4ff; --tx2:#b9c1e6; --tx3:#8790ba;
+  --fin:#ffc24b; --cli:#38d6ff; --pro:#c084fc; --apr:#4ade80; --nar:#ff7a1a;
+  --rojo:#ff5470; --ama:#ffd23f; --ver:#3ddc84; --ac:var(--nar);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;overflow:hidden;user-select:none}
+h1,h2,h3,p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+b{font-weight:800;color:#fff}
+
+/* ───── Fondo vivo ───── */
+#cielo{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.orbe{position:fixed;border-radius:50%;filter:blur(90px);opacity:.34;z-index:0;pointer-events:none;transition:background 1.2s}
+.orbe.a{width:52vw;height:52vw;left:-14vw;top:-18vw;background:var(--ac);animation:deriva 26s ease-in-out infinite alternate}
+.orbe.b{width:44vw;height:44vw;right:-12vw;bottom:-18vw;background:#3b5bff;animation:deriva 32s ease-in-out infinite alternate-reverse}
+.orbe.c{width:26vw;height:26vw;left:42vw;top:56vh;background:#c084fc;opacity:.2;animation:deriva 22s ease-in-out infinite alternate}
+@keyframes deriva{to{transform:translate(9vw,7vh) scale(1.18)}}
+.flot{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.flot span{position:absolute;bottom:-12vh;font-size:5.4vh;opacity:.13;animation:sube linear infinite;filter:saturate(.8)}
+@keyframes sube{to{transform:translateY(-130vh) rotate(40deg)}}
+.rejilla{position:fixed;left:-10vw;right:-10vw;bottom:-6vh;height:46vh;z-index:0;pointer-events:none;opacity:.22;
+  background:linear-gradient(transparent 0 96%,rgba(120,150,255,.7) 96%),linear-gradient(90deg,transparent 0 96%,rgba(120,150,255,.7) 96%);background-size:5vw 5vh;
+  transform:perspective(60vh) rotateX(62deg);transform-origin:50% 100%;mask-image:linear-gradient(transparent,#000 70%);-webkit-mask-image:linear-gradient(transparent,#000 70%);animation:corre 3.2s linear infinite}
+@keyframes corre{to{background-position:0 5vh,0 0}}
+
+/* ───── Escenario 1600 × 900 que se escala a la pantalla ───── */
+#marco{position:fixed;inset:0;z-index:2;perspective:1800px}
+#esc{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:50% 50%;font-size:27px;line-height:1.38}
+.sl{position:absolute;inset:0;padding:58px 90px 100px;opacity:0;visibility:hidden;transform:scale(1.08);transition:opacity .55s,transform .7s cubic-bezier(.2,.8,.2,1),visibility 0s .7s;display:flex;flex-direction:column}
+.sl.antes{transform:scale(.9)}
+.sl.on{opacity:1;visibility:visible;transform:none;transition:opacity .55s,transform .7s cubic-bezier(.2,.8,.2,1)}
+[data-f]{opacity:0;transform:translateY(26px) scale(.98);transition:opacity .6s,transform .7s cubic-bezier(.2,.8,.2,1)}
+[data-f].v{opacity:1;transform:none}
+svg [data-f]{transform:none}
+.kicker{display:flex;align-items:center;gap:14px;font-size:22px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ac)}
+.kicker i{font-style:normal;display:inline-grid;place-items:center;min-width:52px;height:38px;padding:0 10px;border-radius:11px;background:var(--ac);color:#08091a;letter-spacing:0}
+h2{font-size:56px;line-height:1.08;font-weight:900;letter-spacing:-.02em;margin-top:12px}
+h2.s{font-size:46px}
+.grad{background:linear-gradient(90deg,var(--ac),#fff 130%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cuerpo{flex:1;min-height:0;margin-top:26px;display:flex;flex-direction:column;justify-content:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{padding:26px 28px;border-radius:26px;background:var(--panel);border:1.5px solid var(--borde);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 30px 70px -30px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.12)}
+.card.c{border-color:color-mix(in srgb,var(--c) 70%,transparent);box-shadow:0 0 60px -22px var(--c),inset 0 1px 0 rgba(255,255,255,.12)}
+.card h3{font-size:31px;font-weight:900;line-height:1.15}
+.card p{color:var(--tx2);margin-top:8px}
+.ic{font-size:58px;line-height:1;display:inline-block;animation:flota 5s ease-in-out infinite}
+@keyframes flota{50%{transform:translateY(-10px)}}
+.chip{display:inline-block;padding:7px 16px;border-radius:999px;border:1.5px solid var(--borde);background:rgba(0,0,0,.3);font-size:22px;font-weight:700;color:var(--tx2);margin:6px 6px 0 0}
+.frase{font-size:35px;line-height:1.3;font-weight:700}
+.frase em{font-style:normal;color:var(--ac)}
+.nota{font-size:24px;color:var(--tx2)}
+.cita{padding:20px 28px;border-left:7px solid var(--ac);border-radius:0 22px 22px 0;background:rgba(0,0,0,.35);font-size:29px;font-weight:600}
+.cita small{display:block;font-size:20px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);font-weight:800;margin-bottom:4px}
+.luz{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--c);box-shadow:0 0 18px var(--c);vertical-align:-3px}
+
+/* ───── Barra inferior ───── */
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;align-items:center;gap:1.2vw;padding:1.1vh 1.6vw;background:linear-gradient(transparent,rgba(3,4,12,.92) 45%)}
+#nav button{border:1.5px solid var(--borde);background:rgba(255,255,255,.08);border-radius:1.4vh;height:5.4vh;min-width:5.4vh;padding:0 1.4vh;font-size:2.4vh;font-weight:800}
+#nav button:hover{background:var(--ac);color:#08091a;border-color:var(--ac)}
+#tit{font-size:2.3vh;font-weight:800;color:var(--tx2);white-space:nowrap}
+#pts{flex:1;display:flex;gap:.5vw;align-items:center;justify-content:center}
+#pts i{flex:1;max-width:3vw;height:.9vh;border-radius:1vh;background:rgba(255,255,255,.16);cursor:pointer;transition:.3s}
+#pts i.h{background:rgba(255,255,255,.5)}#pts i.a{background:var(--ac);box-shadow:0 0 14px var(--ac)}
+#cnt{font-size:2.3vh;font-weight:800;color:var(--tx2);font-variant-numeric:tabular-nums}
+#gira{display:none;position:fixed;inset:auto 0 9vh 0;z-index:6;text-align:center;font-size:15px;font-weight:700;color:var(--ama)}
+@media(orientation:portrait) and (max-width:700px){#gira{display:block}}
+
+/* ───── Portada ───── */
+.portada{align-items:center;justify-content:center;text-align:center}
+.portada img{height:62px;opacity:.95}
+.portada h1{font-size:132px;line-height:.98;font-weight:900;letter-spacing:-.035em;margin-top:26px;background:linear-gradient(100deg,var(--fin),var(--cli) 38%,var(--pro) 68%,var(--apr));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 40px rgba(120,150,255,.35))}
+.portada .sub{font-size:38px;font-weight:700;color:var(--tx2);margin-top:20px}
+.orbita{position:absolute;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:23px;font-weight:800;color:var(--c);animation:flota 6s ease-in-out infinite}
+.orbita span{display:grid;place-items:center;width:112px;height:112px;border-radius:50%;font-size:56px;background:color-mix(in srgb,var(--c) 18%,#0a0d22);border:2px solid var(--c);box-shadow:0 0 50px -6px var(--c)}
+.pista{margin-top:38px;font-size:24px;font-weight:700;color:var(--tx3);animation:late 2.2s ease-in-out infinite}
+@keyframes late{50%{opacity:.35}}
+
+/* ───── 01 Avión ───── */
+.cabina{display:grid;grid-template-columns:700px 1fr;gap:34px;align-items:stretch}
+.cielo2{position:relative;height:430px;border-radius:28px;overflow:hidden;border:1.5px solid var(--borde);background:linear-gradient(#17306e,#3b6fd6 60%,#8fb6ff)}
+.cielo2.alerta{animation:alarma 1s steps(2) infinite}
+@keyframes alarma{50%{box-shadow:0 0 0 6px rgba(255,84,112,.55),0 0 70px rgba(255,84,112,.6)}}
+.nube{position:absolute;width:190px;height:56px;border-radius:60px;background:rgba(255,255,255,.75);filter:blur(3px);animation:pasa linear infinite}
+.nube::before{content:"";position:absolute;left:36px;top:-28px;width:92px;height:70px;border-radius:50%;background:inherit}
+@keyframes pasa{from{transform:translateX(760px)}to{transform:translateX(-260px)}}
+.avion{position:absolute;left:150px;top:150px;font-size:118px;line-height:1;animation:vuela 3.4s ease-in-out infinite;filter:drop-shadow(0 16px 18px rgba(0,0,0,.4))}
+@keyframes vuela{50%{transform:translateY(-16px) rotate(-2deg)}}
+.monte{position:absolute;right:-420px;bottom:0;width:0;height:0;border-left:230px solid transparent;border-right:230px solid transparent;border-bottom:380px solid #2a2f4a;transition:right 2.4s cubic-bezier(.3,.7,.3,1)}
+.monte::after{content:"";position:absolute;left:-62px;top:0;border-left:62px solid transparent;border-right:62px solid transparent;border-bottom:102px solid #eef2ff}
+.monte.v{right:-70px;opacity:1}
+.cielo2 .rot{position:absolute;left:22px;bottom:18px;padding:8px 18px;border-radius:14px;background:rgba(5,7,19,.75);font-size:24px;font-weight:800}
+.relojes{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.reloj{position:relative;padding:18px 20px;border-radius:24px;background:rgba(0,0,0,.42);border:2px solid var(--borde);display:flex;gap:18px;align-items:center;transition:.6s}
+.reloj .d{width:104px;height:104px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:44px;background:conic-gradient(var(--k,#3a4063) calc(var(--p,0)*1%),rgba(255,255,255,.08) 0);transition:.6s}
+.reloj .d::after{content:"";position:absolute}
+.reloj .d span{display:grid;place-items:center;width:78px;height:78px;border-radius:50%;background:#0a0d22}
+.reloj small{display:block;font-size:20px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3)}
+.reloj b{display:block;font-size:34px;line-height:1.1}
+.reloj em{font-style:normal;font-size:22px;font-weight:700;color:var(--k)}
+.reloj .si{display:none}.reloj.v .si{display:block}.reloj.v .no{display:none}
+.reloj.v{border-color:var(--k);box-shadow:0 0 44px -12px var(--k)}
+.reloj:not(.v):not(.fijo){opacity:.5}.reloj:not(.v):not(.fijo) .d{--p:0}
+
+/* ───── Gráficos SVG ───── */
+.traza{fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.8s ease}
+.v .traza,.traza.v{stroke-dashoffset:0}
+svg text{fill:#fff;font-family:inherit;font-weight:800}
+.eje{stroke:rgba(255,255,255,.25);stroke-width:2}
+.rayo{stroke-width:12;stroke-linecap:round;filter:drop-shadow(0 0 12px currentColor)}
+.balanza .brazo{transform-origin:260px 96px;transform:rotate(-13deg);transition:transform 1.4s cubic-bezier(.3,1.6,.5,1)}
+.balanza.ok .brazo{transform:rotate(0)}
+.savia{animation:savia 3s linear infinite}
+@keyframes savia{from{transform:translateY(0);opacity:0}15%{opacity:1}85%{opacity:1}to{transform:translateY(-430px);opacity:0}}
+
+/* ───── Cascada ───── */
+.casc{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;align-items:stretch}
+.casc .card{text-align:center;padding:24px 16px;position:relative}
+.casc .card:not(:last-child)::after{content:"➜";position:absolute;right:-22px;top:50%;transform:translateY(-50%);font-size:30px;color:var(--tx3);z-index:2}
+.casc .pte{background:color-mix(in srgb,var(--ac) 22%,#0a0d22);border-color:var(--ac);box-shadow:0 0 70px -14px var(--ac);transform:scale(1.06)}
+.casc [data-f].pte.v{transform:scale(1.06)}
+
+/* ───── Perspectivas ───── */
+.per{display:flex;flex-direction:column;gap:4px;padding:20px 22px}
+.per h3{color:var(--c)}
+.per .q{font-size:24px;font-weight:700;color:#fff;margin-top:2px;min-height:90px;line-height:1.25}
+.per .chip{font-size:20px;padding:5px 12px;border-color:color-mix(in srgb,var(--c) 55%,transparent)}
+.per .ej{margin-top:auto;padding-top:12px;font-size:22px;color:var(--tx2);border-top:1.5px dashed var(--borde)}
+
+/* ───── Torre causa-efecto ───── */
+.torre{display:flex;flex-direction:column;gap:12px}
+.piso{display:grid;grid-template-columns:86px 1fr;gap:18px;align-items:center;padding:16px 22px;border-radius:22px;background:color-mix(in srgb,var(--c) 14%,#0a0d22);border:2px solid var(--c);position:relative}
+.piso .e{font-size:50px;line-height:1}
+.piso small{display:block;font-size:20px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.piso b{font-size:28px;line-height:1.2}
+.piso .pq{font-size:23px;color:var(--tx2)}
+.flechota{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:25px;font-weight:800;text-align:center;color:var(--ac)}
+.flechota .f{width:22px;flex:1;min-height:200px;border-radius:12px;background:linear-gradient(var(--dir,180deg),transparent,var(--ac));position:relative}
+.flechota .f::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border:26px solid transparent}
+.flechota.baja .f::after{bottom:-40px;border-top-color:var(--ac)}
+.flechota.sube .f{--dir:0deg}.flechota.sube .f::after{top:-40px;border-bottom-color:var(--ac)}
+
+/* ───── Mapa estratégico ───── */
+.mapag{display:grid;grid-template-columns:920px 1fr;gap:28px;align-items:center}
+.mapa{width:920px;height:537px;display:block;overflow:visible}
+.mapa .bd{fill:color-mix(in srgb,var(--c) 9%,transparent);stroke:color-mix(in srgb,var(--c) 45%,transparent);stroke-width:2;stroke-dasharray:8 7}
+.mapa .bl{font-size:17.5px;font-weight:900;letter-spacing:0;text-transform:uppercase;color:var(--c);line-height:1.15;display:flex;flex-direction:column;justify-content:center;height:100%}
+.mapa .bl span{font-size:38px}
+.mapa .n{transition:opacity .6s,filter .6s}
+.mapa .n rect{fill:#0d1230;stroke:var(--c);stroke-width:2.5;transition:.6s}
+.mapa .n .nt{display:flex;gap:12px;align-items:center;height:100%;padding:0 16px;font-size:21.5px;font-weight:700;line-height:1.16;color:#fff}
+.mapa .n .nt i{font-style:normal;flex:none;padding:3px 9px;border-radius:9px;background:var(--c);color:#08091a;font-weight:900;font-size:19px}
+.mapa .n .nt small{display:block;font-size:19px;font-weight:900;margin-top:3px;color:var(--s)}
+.mapa .n.off{opacity:0}
+.mapa .n.dim{opacity:.28}
+.mapa .n.hi rect{stroke-width:5;filter:drop-shadow(0 0 16px var(--c))}
+.mapa .n.fin rect{stroke:#fff;stroke-width:5;filter:drop-shadow(0 0 22px var(--fin))}
+.mapa .n.base rect{stroke:#fff;stroke-width:5;filter:drop-shadow(0 0 22px var(--apr))}
+.mapa .n.sem rect{fill:color-mix(in srgb,var(--s) 30%,#0d1230);stroke:var(--s);stroke-width:3.5}
+.mapa .n.sem.hi rect{stroke-width:6;filter:drop-shadow(0 0 20px var(--s))}
+.mapa .l{fill:none;stroke:#fff;stroke-width:3.4;stroke-dasharray:1;stroke-dashoffset:1;opacity:.9;transition:stroke-dashoffset 1.1s ease,opacity .5s,stroke .5s,stroke-width .5s}
+.mapa .l.v{stroke-dashoffset:0}
+.mapa .l.dim{opacity:.16}
+.mapa .l.hi{stroke:var(--ama);stroke-width:6;filter:drop-shadow(0 0 10px var(--ama))}
+.mapa .et{font-size:20px;font-weight:900;opacity:0;transition:opacity .6s}
+.mapa .et.v{opacity:1}
+.lado{display:flex;flex-direction:column;gap:13px}
+.lado .card{padding:16px 20px}
+.lado .card h3{font-size:25px}
+.lado .card p{font-size:22px;margin-top:4px;line-height:1.3}
+.faq .card{padding:22px 24px}
+.faq h3{font-size:26px}.faq p{font-size:23px}
+.faq .r{display:inline-block;font-weight:900;color:var(--c);margin-right:8px}
+
+/* ───── Piezas ───── */
+.pz{position:relative;text-align:left;display:flex;flex-direction:column;gap:6px}
+.pz small{font-size:20px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.pz .ej{margin-top:auto;padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.4);font-size:23px;font-weight:700;border-left:5px solid var(--c)}
+.pz:not(:last-child)::after{content:"➜";position:absolute;right:-24px;top:44%;font-size:30px;color:var(--tx3);z-index:2}
+
+/* ───── Fórmulas y tabla ───── */
+.formula{font-size:38px;font-weight:900;padding:14px 20px;border-radius:16px;background:rgba(0,0,0,.45);text-align:center;margin:12px 0;letter-spacing:.01em}
+.formula span{color:var(--c)}
+.barra{height:26px;border-radius:14px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:10px}
+.barra i{display:block;height:100%;width:0;border-radius:14px;background:var(--k);box-shadow:0 0 18px var(--k);transition:width 1.6s cubic-bezier(.2,.8,.2,1) .3s}
+.v .barra i{width:var(--w)}
+.sema{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.sema div{padding:14px 18px;border-radius:18px;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);font-size:25px;font-weight:800;display:flex;gap:12px;align-items:center}
+table.tb{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0 6px;font-size:19.5px;line-height:1.2}
+.tb th{font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);text-align:left;padding:0 12px 2px;font-weight:800}
+.tb td{padding:6px 10px;height:60px;background:rgba(255,255,255,.06);border-top:1.5px solid var(--borde);border-bottom:1.5px solid var(--borde)}
+.tb td:first-child{border-left:6px solid var(--c);border-radius:14px 0 0 14px;font-weight:900;color:var(--c);font-size:18px;text-transform:uppercase;letter-spacing:0;white-space:nowrap}
+.tb td:last-child{border-right:1.5px solid var(--borde);border-radius:0 14px 14px 0;color:var(--tx2)}
+.tb td.n{font-weight:800;white-space:nowrap;text-align:right}
+.tb .pill{display:inline-flex;gap:8px;align-items:center;padding:4px 12px;border-radius:999px;font-weight:900;border:2px solid var(--s);background:color-mix(in srgb,var(--s) 22%,transparent);white-space:nowrap}
+.tb .pill .luz{width:16px;height:16px}
+
+/* ───── Lectura y decisión ───── */
+.paso{display:grid;grid-template-columns:50px 1fr;gap:14px;align-items:center;padding:11px 16px;border-radius:18px;background:rgba(0,0,0,.38);border:1.5px solid var(--borde);font-size:22px;line-height:1.28}
+.paso i{font-style:normal;display:grid;place-items:center;width:50px;height:50px;border-radius:50%;background:var(--ac);color:#08091a;font-weight:900;font-size:26px}
+.paso div>b:first-child{display:block;font-size:24px}
+.dec h3{font-size:34px}
+.dec .gr{font-size:74px;line-height:1}
+.idea{display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:center;padding:18px 22px}
+.idea i{font-style:normal;font-size:46px}
+.idea p{margin:0;color:#fff;font-weight:700;font-size:25px;line-height:1.25}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01s!important}}
+@media print{.orbe,.flot,.rejilla,#cielo,#nav{display:none}}
+</style>
+</head>
+<body>
+<canvas id="cielo" aria-hidden="true"></canvas>
+<div class="orbe a"></div><div class="orbe b"></div><div class="orbe c"></div>
+<div class="rejilla" aria-hidden="true"></div>
+<div class="flot" id="flot" aria-hidden="true"></div>
+
+<div id="marco"><div id="esc">
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<section class="sl portada" data-t="Inicio">
+  <div class="orbita" style="--c:var(--fin);left:120px;top:110px"><span>💰</span>Financiera</div>
+  <div class="orbita" style="--c:var(--cli);right:120px;top:130px;animation-delay:-1.5s"><span>🤝</span>Clientes</div>
+  <div class="orbita" style="--c:var(--pro);left:150px;bottom:150px;animation-delay:-3s"><span>⚙️</span>Procesos internos</div>
+  <div class="orbita" style="--c:var(--apr);right:130px;bottom:140px;animation-delay:-4.2s"><span>🌱</span>Aprendizaje y crecimiento</div>
+  <img src="data:image/png;base64,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" alt="UNIFRANZ">
+  <p class="chip" style="margin-top:26px;font-size:24px">Administración Estratégica · 3.er semestre</p>
+  <h1>Cuadro de<br>Mando Integral</h1>
+  <p class="sub">Balanced Scorecard · Cómo convertir la estrategia en acción</p>
+  <p class="pista">Pulsa → o haz clic para avanzar</p>
+</section>
+
+<!-- ═══════════ 01 EL PROBLEMA ═══════════ -->
+<section class="sl" data-t="El problema" data-n="01" style="--ac:var(--rojo)" data-fn="avion">
+  <div class="kicker"><i>01</i> El problema</div>
+  <h2>¿Pilotarías un avión mirando <span class="grad">un solo instrumento</span>?</h2>
+  <div class="cuerpo">
+    <div class="cabina">
+      <div class="cielo2" id="cielo2">
+        <div class="nube" style="top:50px;animation-duration:15s"></div><div class="nube" style="top:210px;animation-duration:22s;animation-delay:-9s;opacity:.7"></div><div class="nube" style="top:120px;animation-duration:18s;animation-delay:-4s;transform:scale(.7)"></div>
+        <div class="monte" id="monte"></div>
+        <div class="avion">✈️</div>
+        <div class="rot" id="rot">😌 «Vamos a 850 km/h: todo perfecto»</div>
+      </div>
+      <div>
+        <div class="relojes">
+          <div class="reloj fijo v" style="--k:var(--ver);--p:85"><div class="d"><span>🚀</span></div><div><small>Velocidad</small><b>850 km/h</b><em>Excelente</em></div></div>
+          <div class="reloj" data-k="1" style="--k:var(--rojo);--p:8"><div class="d"><span>⛽</span></div><div><small>Combustible</small><b class="no">— apagado —</b><b class="si">8 %</b><em class="si">¡Casi vacío!</em></div></div>
+          <div class="reloj" data-k="1" style="--k:var(--ama);--p:35"><div class="d"><span>🏔️</span></div><div><small>Altitud</small><b class="no">— apagado —</b><b class="si">Bajando</b><em class="si">Montaña al frente</em></div></div>
+          <div class="reloj" data-k="1" style="--k:var(--rojo);--p:60"><div class="d"><span>🧭</span></div><div><small>Rumbo</small><b class="no">— apagado —</b><b class="si">20° desviado</b><em class="si">No va al destino</em></div></div>
+        </div>
+        <div class="cita" data-f="2" style="margin-top:18px"><small>Kaplan y Norton, 1992</small>Dirigir una empresa mirando <b>solo las finanzas</b> es volar mirando solo el velocímetro.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sl" data-t="El problema" data-n="01" style="--ac:var(--rojo)">
+  <div class="kicker"><i>01</i> El problema · en una empresa</div>
+  <h2 class="s">Café Tunari: «La utilidad sube, <span class="grad">¿para qué mirar algo más?</span>»</h2>
+  <div class="cuerpo">
+    <div style="display:grid;grid-template-columns:1000px 1fr;gap:28px;align-items:center">
+      <svg viewBox="0 0 1000 470" width="1000" height="470">
+        <line class="eje" x1="70" y1="410" x2="970" y2="410"/><line class="eje" x1="70" y1="30" x2="70" y2="410"/>
+        <g font-size="22" text-anchor="middle" style="opacity:.8"><text x="110" y="446">Trim. 1</text><text x="270" y="446">Trim. 2</text><text x="430" y="446">Trim. 3</text><text x="590" y="446">Trim. 4</text><text x="750" y="446">Trim. 5</text><text x="910" y="446">Trim. 6</text></g>
+        <g class="v"><path class="traza" pathLength="1" stroke="#ffc24b" d="M110 300L270 250L430 195L590 150"/></g>
+        <text x="120" y="340" font-size="25" fill="#ffc24b" style="fill:#ffc24b">💰 Utilidad</text>
+        <g data-f="1"><path class="traza" pathLength="1" stroke="#38d6ff" d="M110 110L270 135L430 205L590 275L750 330L910 365"/><text x="120" y="88" font-size="25" style="fill:#38d6ff">🤝 Satisfacción del cliente</text>
+          <path class="traza" pathLength="1" stroke="#4ade80" stroke-dasharray="1" d="M110 190L270 370L910 385"/><text x="285" y="398" font-size="23" style="fill:#4ade80">🌱 Capacitación (se recortó para «ahorrar»)</text>
+          <line x1="270" y1="40" x2="270" y2="410" stroke="#ff5470" stroke-width="3" stroke-dasharray="8 8"/><text x="282" y="58" font-size="22" style="fill:#ff5470">Aquí empezó el problema</text></g>
+        <g data-f="2"><path class="traza" pathLength="1" stroke="#ffc24b" d="M590 150L750 235L910 330"/><line x1="750" y1="40" x2="750" y2="410" stroke="#ffd23f" stroke-width="3" stroke-dasharray="8 8"/><text x="762" y="58" font-size="22" style="fill:#ffd23f">Aquí lo notó la caja</text></g>
+      </svg>
+      <div class="lado">
+        <div class="card" style="--c:var(--fin)"><h3>🪞 Las finanzas son el retrovisor</h3><p>Cuentan lo que <b>ya pasó</b>. Cuando bajan, el daño lleva meses hecho.</p></div>
+        <div class="card c" data-f="1" style="--c:var(--cli)"><h3>🔭 Faltaba el parabrisas</h3><p>Clientes, procesos y personas avisan <b>antes</b>: aquí, un año antes.</p></div>
+        <div class="card c" data-f="2" style="--c:var(--rojo)"><h3>⏱️ Tres trimestres tarde</h3><p>Mirando solo la utilidad, el dueño reaccionó cuando ya había perdido clientes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 02 QUÉ ES ═══════════ -->
+<section class="sl" data-t="Qué es" data-n="02" style="--ac:var(--cli)">
+  <div class="kicker"><i>02</i> Qué es</div>
+  <h2>Un prisma que <span class="grad">descompone la estrategia</span> en algo que se puede medir</h2>
+  <div class="cuerpo">
+    <svg viewBox="0 0 1420 400" width="1420" height="400">
+      <defs><linearGradient id="vid" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".5"/><stop offset="1" stop-color="#38d6ff" stop-opacity=".12"/></linearGradient></defs>
+      <g class="v"><path class="traza rayo" pathLength="1" stroke="#fff" style="color:#fff" d="M30 200L520 200"/></g>
+      <text x="40" y="160" font-size="34">ESTRATEGIA</text><text x="40" y="262" font-size="23" style="fill:#b9c1e6;font-weight:600">«Queremos ser la cafetería preferida…»</text>
+      <path d="M610 40L770 360L450 360Z" fill="url(#vid)" stroke="#fff" stroke-width="4" stroke-linejoin="round" style="filter:drop-shadow(0 0 30px rgba(56,214,255,.6))"/>
+      <text x="610" y="270" font-size="44" text-anchor="middle">CMI</text>
+      <g data-f="1">
+        <path class="traza rayo" pathLength="1" stroke="#ffc24b" style="color:#ffc24b" d="M690 200L960 60"/><path class="traza rayo" pathLength="1" stroke="#38d6ff" style="color:#38d6ff" d="M690 200L960 155"/>
+        <path class="traza rayo" pathLength="1" stroke="#c084fc" style="color:#c084fc" d="M690 200L960 250"/><path class="traza rayo" pathLength="1" stroke="#4ade80" style="color:#4ade80" d="M690 200L960 345"/>
+        <text x="985" y="71" font-size="31" style="fill:#ffc24b">💰 Financiera</text><text x="985" y="166" font-size="31" style="fill:#38d6ff">🤝 Clientes</text>
+        <text x="985" y="261" font-size="31" style="fill:#c084fc">⚙️ Procesos internos</text><text x="985" y="356" font-size="31" style="fill:#4ade80">🌱 Aprendizaje y crecimiento</text>
+      </g>
+    </svg>
+    <p class="frase" data-f="2" style="margin-top:22px;text-align:center">El CMI <em>traduce la estrategia</em> en objetivos, indicadores, metas e iniciativas,<br>ordenados en <em>cuatro perspectivas</em> unidas por causa y efecto.</p>
+  </div>
+</section>
+
+<section class="sl" data-t="Qué es" data-n="02" style="--ac:var(--cli)" data-fn="balanza">
+  <div class="kicker"><i>02</i> Qué es · por qué se llama así</div>
+  <h2>«Balanced» Scorecard: un tablero <span class="grad">equilibrado</span></h2>
+  <div class="cuerpo">
+    <div class="g2" style="grid-template-columns:560px 1fr">
+      <svg class="balanza" id="balanza" viewBox="0 0 520 400" width="560" height="430">
+        <path d="M260 96L260 350M170 350L350 350" stroke="#b9c1e6" stroke-width="12" stroke-linecap="round"/>
+        <g class="brazo"><path d="M60 96L460 96" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+          <path d="M60 96L20 220M60 96L100 220M460 96L420 220M460 96L500 220" stroke="#b9c1e6" stroke-width="3"/>
+          <path d="M5 220Q60 280 115 220Z" fill="#ffc24b"/><path d="M405 220Q460 280 515 220Z" fill="#38d6ff"/>
+          <text x="60" y="205" font-size="54" text-anchor="middle">💰</text><text x="460" y="205" font-size="34" text-anchor="middle" data-f="1">🤝⚙️🌱</text></g>
+        <circle cx="260" cy="96" r="16" fill="#fff"/>
+      </svg>
+      <div class="lado">
+        <div class="card"><h3>Solo finanzas = tablero inclinado</h3><p>Se ve el resultado, pero no lo que lo produce.</p></div>
+        <div class="card c" data-f="1" style="--c:var(--cli)"><h3>El CMI pone el otro platillo</h3><p>Clientes, procesos y aprendizaje pesan tanto como el dinero.</p></div>
+        <div data-f="2"><span class="chip">Financiero ⇄ No financiero</span><span class="chip">Corto plazo ⇄ Largo plazo</span><span class="chip">Resultados ⇄ Causas</span><span class="chip">Pasado ⇄ Futuro</span>
+          <p class="nota" style="margin-top:16px">Robert Kaplan y David Norton · Harvard Business Review · 1992</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 03 DÓNDE ENCAJA ═══════════ -->
+<section class="sl" data-t="Dónde encaja" data-n="03" style="--ac:var(--nar)">
+  <div class="kicker"><i>03</i> Dónde encaja</div>
+  <h2>El CMI es el <span class="grad">puente</span> entre la estrategia y el día a día</h2>
+  <div class="cuerpo">
+    <div class="casc">
+      <div class="card" data-f="1"><span class="ic">🧭</span><h3>Misión</h3><p>¿Para qué existimos?</p></div>
+      <div class="card" data-f="1"><span class="ic">🔭</span><h3>Visión</h3><p>¿Adónde queremos llegar?</p></div>
+      <div class="card" data-f="2"><span class="ic">♟️</span><h3>Estrategia</h3><p>¿Cómo vamos a llegar?</p></div>
+      <div class="card pte" data-f="3"><span class="ic">📊</span><h3>CMI</h3><p style="color:#fff">¿Cómo sabemos si estamos llegando?</p></div>
+      <div class="card" data-f="4"><span class="ic">🛠️</span><h3>Acción diaria</h3><p>¿Qué hago yo esta semana?</p></div>
+    </div>
+    <p class="frase" data-f="4" style="margin-top:44px;text-align:center">Sin el CMI, la estrategia se queda <em>en un cuadro colgado en la pared</em>.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 04 PERSPECTIVAS ═══════════ -->
+<section class="sl" data-t="Las 4 perspectivas" data-n="04" style="--ac:var(--pro)">
+  <div class="kicker"><i>04</i> El corazón del modelo</div>
+  <h2 class="s">Las <span class="grad">cuatro perspectivas</span>: cuatro preguntas sobre la misma empresa</h2>
+  <div class="cuerpo">
+    <div class="g4" style="align-items:stretch">
+      <div class="card c per" data-f="1" style="--c:var(--fin)"><span class="ic">💰</span><h3>Financiera</h3><p class="q">¿Qué resultados económicos esperan los dueños?</p><div><span class="chip">ingresos</span><span class="chip">rentabilidad</span><span class="chip">costos</span><span class="chip">liquidez</span></div><p class="ej">Ej.: <b>Mejorar la rentabilidad</b></p></div>
+      <div class="card c per" data-f="2" style="--c:var(--cli)"><span class="ic" style="animation-delay:-1s">🤝</span><h3>Clientes</h3><p class="q">¿Qué debe percibir el cliente para elegirnos y volver?</p><div><span class="chip">satisfacción</span><span class="chip">fidelidad</span><span class="chip">captación</span><span class="chip">imagen</span></div><p class="ej">Ej.: <b>Fidelizar a los clientes frecuentes</b></p></div>
+      <div class="card c per" data-f="3" style="--c:var(--pro)"><span class="ic" style="animation-delay:-2s">⚙️</span><h3>Procesos internos</h3><p class="q">¿En qué debemos ser excelentes por dentro?</p><div><span class="chip">tiempos</span><span class="chip">calidad</span><span class="chip">producción</span><span class="chip">entregas</span></div><p class="ej">Ej.: <b>Reducir el tiempo de atención</b></p></div>
+      <div class="card c per" data-f="4" style="--c:var(--apr)"><span class="ic" style="animation-delay:-3s">🌱</span><h3>Aprendizaje y crecimiento</h3><p class="q">¿Qué personas, información y cultura necesitamos?</p><div><span class="chip">capacitación</span><span class="chip">clima</span><span class="chip">tecnología</span><span class="chip">cultura</span></div><p class="ej">Ej.: <b>Fortalecer las competencias de los baristas</b></p></div>
+    </div>
+    <p class="nota" data-f="4" style="margin-top:20px;text-align:center">Truco para clasificar un objetivo: pregúntate <b>quién es el protagonista</b> de la frase: el dinero, el cliente, el trabajo interno o la gente y sus herramientas.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 05 LA LÓGICA INTERNA ═══════════ -->
+<section class="sl" data-t="La lógica interna" data-n="05" style="--ac:var(--fin)">
+  <div class="kicker"><i>05</i> La lógica interna · primera mitad</div>
+  <h2 class="s">Se <span class="grad">diseña de arriba hacia abajo</span>: «¿y qué necesito para lograrlo?»</h2>
+  <div class="cuerpo">
+    <div style="display:grid;grid-template-columns:170px 1fr;gap:26px;align-items:stretch">
+      <div class="flechota baja"><span>Empiezo por<br>el resultado</span><div class="f"></div><span style="margin-top:36px">y bajo hasta<br>la base</span></div>
+      <div class="torre">
+        <div class="piso" data-f="1" style="--c:var(--fin)"><span class="e">💰</span><div><small>1.º Financiera</small><b>Quiero mejorar la rentabilidad del café</b><p class="pq">¿Qué necesito para lograrlo? → que los clientes compren más y vuelvan.</p></div></div>
+        <div class="piso" data-f="2" style="--c:var(--cli)"><span class="e">🤝</span><div><small>2.º Clientes</small><b>Necesito clientes satisfechos que regresen cada semana</b><p class="pq">¿Y qué necesito para eso? → atenderlos rápido y con un café siempre bueno.</p></div></div>
+        <div class="piso" data-f="3" style="--c:var(--pro)"><span class="e">⚙️</span><div><small>3.º Procesos internos</small><b>Necesito atención rápida y calidad en cada taza</b><p class="pq">¿Y qué necesito para eso? → baristas bien preparados que no se vayan.</p></div></div>
+        <div class="piso" data-f="4" style="--c:var(--apr)"><span class="e">🌱</span><div><small>4.º Aprendizaje y crecimiento</small><b>Necesito capacitar y retener a los baristas</b><p class="pq">Aquí ya no hay más «¿y qué necesito?»: es la base de todo.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sl" data-t="La lógica interna" data-n="05" style="--ac:var(--apr)">
+  <div class="kicker"><i>05</i> La lógica interna · segunda mitad</div>
+  <h2 class="s">Pero se <span class="grad">lee de abajo hacia arriba</span>: «si… entonces…»</h2>
+  <div class="cuerpo">
+    <div style="display:grid;grid-template-columns:330px 1fr 300px;gap:26px;align-items:stretch">
+      <svg viewBox="0 0 330 600" width="330" height="600">
+        <ellipse cx="165" cy="170" rx="150" ry="140" fill="#1d5f7a" opacity=".85"/><ellipse cx="165" cy="150" rx="118" ry="104" fill="#2b88a8" opacity=".7"/>
+        <path d="M150 300L150 450L180 450L180 300Z" fill="#8a5cc2"/>
+        <path d="M150 450C120 500 70 500 40 560M165 450L165 580M180 450C210 500 260 500 290 560M150 470C130 520 110 540 95 585M180 470C200 520 220 540 235 585" stroke="#4ade80" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <line x1="0" y1="452" x2="330" y2="452" stroke="rgba(255,255,255,.3)" stroke-width="3" stroke-dasharray="10 8"/>
+        <g font-size="40" text-anchor="middle"><text x="95" y="120">💰</text><text x="225" y="150">💰</text><text x="150" y="215">💰</text><text x="165" y="395">⚙️</text><text x="165" y="545">🌱</text><text x="250" y="250" font-size="34">🤝</text><text x="70" y="235" font-size="34">🤝</text></g>
+        <g fill="#eaffb0"><circle class="savia" cx="165" cy="560" r="7"/><circle class="savia" cx="165" cy="560" r="7" style="animation-delay:-1s"/><circle class="savia" cx="165" cy="560" r="7" style="animation-delay:-2s"/></g>
+      </svg>
+      <div class="torre">
+        <div class="piso" data-f="4" style="--c:var(--fin)"><span class="e">💰</span><div><small>Frutos · el efecto final</small><b>…entonces suben las ventas y la rentabilidad.</b></div></div>
+        <div class="piso" data-f="3" style="--c:var(--cli)"><span class="e">🤝</span><div><small>Ramas</small><b>…entonces el cliente queda satisfecho y vuelve;</b></div></div>
+        <div class="piso" data-f="2" style="--c:var(--pro)"><span class="e">⚙️</span><div><small>Tronco</small><b>…entonces atienden más rápido y con mejor calidad;</b></div></div>
+        <div class="piso" data-f="1" style="--c:var(--apr)"><span class="e">🌱</span><div><small>Raíces · la primera causa</small><b>Si capacitamos y retenemos a los baristas…</b></div></div>
+      </div>
+      <div class="lado">
+        <div class="flechota sube" style="flex:1"><div class="f" style="min-height:120px"></div><span>Las causas están abajo,<br>los efectos arriba</span></div>
+        <div class="card" data-f="4" style="padding:18px"><p style="margin:0;font-size:23px;color:#fff"><b>¿Por qué de abajo arriba?</b> Porque lo que haces <b>hoy</b> en la raíz es lo que cosecharás <b>mañana</b> en los frutos. Un árbol no se riega por las hojas.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 06 MAPA ESTRATÉGICO ═══════════ -->
+<section class="sl" data-t="Mapa estratégico" data-n="06" style="--ac:var(--pro)" data-fn="m0">
+  <div class="kicker"><i>06</i> El dibujo de la estrategia</div>
+  <h2 class="s">El <span class="grad">mapa estratégico</span>: toda la estrategia en una sola página</h2>
+  <div class="cuerpo"><div class="mapag"><div id="mp0"></div>
+    <div class="lado">
+      <div class="card"><h3>🎯 Objetivos</h3><p>Lo que la empresa quiere lograr, pocos y claros.</p></div>
+      <div class="card"><h3>🧱 Cuatro franjas</h3><p>Cada objetivo vive en su perspectiva.</p></div>
+      <div class="card"><h3>➜ Flechas</h3><p>Dicen <b>qué causa qué</b>. Sin flechas es una lista; con flechas es una estrategia.</p></div>
+      <p class="nota">Ahora lo construimos <b>paso a paso</b>.</p>
+    </div></div></div>
+</section>
+
+<section class="sl" data-t="Mapa · paso 1" data-n="06" style="--ac:var(--pro)" data-fn="m1">
+  <div class="kicker"><i>06</i> Cómo se construye · paso 1 de 3</div>
+  <h2 class="s">Saca los <span class="grad">objetivos</span> de la estrategia, una pregunta por franja</h2>
+  <div class="cuerpo"><div class="mapag"><div id="mp1"></div>
+    <div class="lado">
+      <div class="cita" style="font-size:24px"><small>Estrategia de Café Tunari</small>Ser la cafetería preferida de la zona por su café de especialidad y su <b>atención rápida</b>, con <b>clientes que vuelven</b> cada semana.</div>
+      <div class="card" data-f="1"><p style="margin:0">Empieza <b>arriba</b> y baja preguntando <b>«¿qué necesito para lograrlo?»</b></p></div>
+      <div class="card" data-f="4"><h3>✅ Tres reglas</h3><p>• Pocos: 1 a 3 por franja.<br>• Empiezan con <b>verbo</b>: incrementar, reducir…<br>• Salen de la estrategia.</p></div>
+    </div></div></div>
+</section>
+
+<section class="sl" data-t="Mapa · paso 2" data-n="06" style="--ac:var(--pro)" data-fn="m2">
+  <div class="kicker"><i>06</i> Cómo se construye · paso 2 de 3</div>
+  <h2 class="s">Ubica el <span class="grad">objetivo final</span> y los <span class="grad">objetivos de partida</span></h2>
+  <div class="cuerpo"><div class="mapag"><div id="mp2"></div>
+    <div class="lado">
+      <div class="card c" data-f="1" style="--c:var(--fin)"><h3>🏁 El objetivo final</h3><p>Está en la perspectiva <b>financiera</b>. Es adonde todo debe llegar (casi siempre la rentabilidad). De él <b>no sale</b> ninguna flecha.</p></div>
+      <div class="card c" data-f="2" style="--c:var(--apr)"><h3>🌱 Los de partida</h3><p>Están en <b>aprendizaje y crecimiento</b>. No reciben flechas de abajo: son lo primero que hay que hacer.</p></div>
+      <p class="nota" data-f="2">Los de clientes y procesos quedan <b>en medio</b>: reciben y entregan.</p>
+    </div></div></div>
+</section>
+
+<section class="sl" data-t="Mapa · paso 3" data-n="06" style="--ac:var(--pro)" data-fn="m3">
+  <div class="kicker"><i>06</i> Cómo se construye · paso 3 de 3</div>
+  <h2 class="s">Une con flechas: cada una significa <span class="grad">«contribuye directamente a»</span></h2>
+  <div class="cuerpo"><div class="mapag"><div id="mp3"></div>
+    <div class="lado">
+      <div class="card"><p style="margin:0">Pregunta de control: <b>«Si lo logro, ¿qué otro objetivo mejora primero?»</b></p></div>
+      <div class="paso" data-f="1"><i>1</i><div><b>Aprendizaje → Procesos</b>Baristas capacitados atienden mejor.</div></div>
+      <div class="paso" data-f="2"><i>2</i><div><b>Procesos → Clientes</b>Rapidez y calidad dan satisfacción.</div></div>
+      <div class="paso" data-f="3"><i>3</i><div><b>Clientes → Financiera</b>Clientes fieles compran más.</div></div>
+      <div class="paso" data-f="4"><i>4</i><div><b>Hacia el final</b>Más ventas mejoran la rentabilidad.</div></div>
+    </div></div></div>
+</section>
+
+<section class="sl" data-t="Mapa · reglas" data-n="06" style="--ac:var(--pro)">
+  <div class="kicker"><i>06</i> Las reglas de las flechas</div>
+  <h2 class="s">Seis dudas que <span class="grad">siempre aparecen</span> al conectar el mapa</h2>
+  <div class="cuerpo">
+    <div class="g3 faq">
+      <div class="card" data-f="1" style="--c:var(--ver)"><h3>¿Hacia dónde van las flechas?</h3><p><span class="r">↑</span>De la causa al efecto: de abajo hacia arriba, normalmente a la perspectiva <b>inmediata superior</b>.</p></div>
+      <div class="card" data-f="1" style="--c:var(--ver)"><h3>¿Todos los cuadros se conectan?</h3><p><span class="r">Sí.</span>Un objetivo sin flechas está <b>suelto</b>: o sobra, o falta el objetivo que lo une a la historia.</p></div>
+      <div class="card" data-f="1" style="--c:var(--ver)"><h3>¿Puede tener varias flechas?</h3><p><span class="r">Sí.</span>Un objetivo puede impulsar a dos y recibir de varios. Dibuja solo las <b>más directas</b>.</p></div>
+      <div class="card" data-f="2" style="--c:var(--ama)"><h3>¿Se unen lado a lado?</h3><p><span class="r">Solo si uno causa al otro.</span>Ej.: más ventas → más rentabilidad. Nunca «porque están juntos». En aprendizaje casi nunca: suben a procesos.</p></div>
+      <div class="card" data-f="2" style="--c:var(--ama)"><h3>¿Hay un final común?</h3><p><span class="r">Sí.</span>Todas las cadenas deben llegar a la perspectiva financiera y confluir en <b>un objetivo final</b>.</p></div>
+      <div class="card" data-f="2" style="--c:var(--rojo)"><h3>¿Se puede saltar una franja?</h3><p><span class="r">Evítalo.</span>Aprendizaje → Financiera esconde el «cómo». Excepción: un proceso que <b>baja costos</b> puede ir directo a la rentabilidad.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sl" data-t="Mapa · cómo se lee" data-n="06" style="--ac:var(--pro)" data-fn="m4">
+  <div class="kicker"><i>06</i> Cómo se lee y se interpreta</div>
+  <h2 class="s">Sigue un camino de abajo arriba y <span class="grad">cuéntalo en voz alta</span></h2>
+  <div class="cuerpo"><div class="mapag"><div id="mp4"></div>
+    <div class="lado">
+      <div class="card c" data-f="1" style="--c:var(--ama)"><h3>Camino 1</h3><p><b>Si</b> fortalecemos a los baristas, <b>entonces</b> baja el tiempo de atención, sube la satisfacción y crecen las ventas.</p></div>
+      <div class="card c" data-f="2" style="--c:var(--ama)"><h3>Camino 2</h3><p><b>Si</b> retenemos al personal clave, <b>entonces</b> se mantiene la calidad, el cliente vuelve y crecen las ventas.</p></div>
+      <div class="card" data-f="3"><h3>🔍 Prueba de coherencia</h3><p>Si la frase «si… entonces…» suena forzada, <b>esa flecha no va</b>.</p></div>
+    </div></div></div>
+</section>
+
+<!-- ═══════════ 07 CUATRO PIEZAS ═══════════ -->
+<section class="sl" data-t="Las cuatro piezas" data-n="07" style="--ac:var(--nar)">
+  <div class="kicker"><i>07</i> Las cuatro piezas</div>
+  <h2 class="s">Cada objetivo del mapa se completa con <span class="grad">indicador, meta e iniciativa</span></h2>
+  <div class="cuerpo">
+    <div class="g4" style="align-items:stretch;gap:30px">
+      <div class="card c pz" data-f="1" style="--c:var(--pro)"><span class="ic">🎯</span><small>¿Qué quiero lograr?</small><h3>Objetivo</h3><p>Empieza con un <b>verbo</b>. Dice la dirección, no el número.</p><div class="ej">Reducir el tiempo de atención</div></div>
+      <div class="card c pz" data-f="2" style="--c:var(--cli)"><span class="ic">📏</span><small>¿Cómo lo mido?</small><h3>Indicador</h3><p>Es <b>algo que se cuenta</b>. No lleva verbo ni cifra.</p><div class="ej">Minutos promedio por pedido</div></div>
+      <div class="card c pz" data-f="3" style="--c:var(--fin)"><span class="ic">🏁</span><small>¿Cuánto y para cuándo?</small><h3>Meta</h3><p>Es el <b>número</b> que quiero alcanzar, con plazo.</p><div class="ej">5 minutos hasta diciembre</div></div>
+      <div class="card c pz" data-f="4" style="--c:var(--apr)"><span class="ic">🛠️</span><small>¿Qué voy a hacer?</small><h3>Iniciativa</h3><p>Un <b>proyecto o acción</b> concreta, con responsable.</p><div class="ej">Rediseñar la barra y habilitar pedidos por QR</div></div>
+    </div>
+    <p class="nota" data-f="4" style="margin-top:22px;text-align:center">Para no confundirlas: el objetivo <b>desea</b>, el indicador <b>mide</b>, la meta <b>pone el número</b> y la iniciativa <b>actúa</b>.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 08 INDICADORES ═══════════ -->
+<section class="sl" data-t="Dos tipos de indicador" data-n="08" style="--ac:var(--cli)">
+  <div class="kicker"><i>08</i> Dos tipos de indicador</div>
+  <h2 class="s">Indicadores de <span class="grad">resultado</span> e indicadores <span class="grad">inductores</span></h2>
+  <div class="cuerpo">
+    <div class="g2" style="align-items:stretch">
+      <div class="card c" data-f="1" style="--c:var(--fin)"><span class="ic">🪞</span><h3>De resultado · el retrovisor</h3><p>Miden el <b>efecto</b>: lo que ya se consiguió. Llegan tarde, pero dicen si se cumplió.</p><div style="margin-top:10px"><span class="chip">Ventas mensuales</span><span class="chip">Margen neto</span><span class="chip">Satisfacción del cliente</span></div><p class="nota" style="margin-top:12px">Suelen estar <b>arriba</b> del mapa.</p></div>
+      <div class="card c" data-f="2" style="--c:var(--apr)"><span class="ic">🔭</span><h3>Inductores · el parabrisas</h3><p>Miden la <b>causa</b>: lo que hoy se hace para que el resultado ocurra. Avisan antes.</p><div style="margin-top:10px"><span class="chip">Horas de capacitación</span><span class="chip">Minutos por pedido</span><span class="chip">Rotación de personal</span></div><p class="nota" style="margin-top:12px">Suelen estar <b>abajo</b> del mapa.</p></div>
+    </div>
+    <div class="cita" data-f="3" style="margin-top:22px;--ac:var(--ama)"><small>Ojo: el tipo no cambia el cálculo</small>«Resultado» o «inductor» solo dice <b>qué mide</b> (efecto o causa). <b>Todos</b> los indicadores tienen meta y valor real, a todos se les calcula el cumplimiento y a todos se les pinta el semáforo.</div>
+  </div>
+</section>
+
+<section class="sl" data-t="Cumplimiento y semáforo" data-n="08" style="--ac:var(--ama)">
+  <div class="kicker"><i>08</i> Cómo se mide cada indicador</div>
+  <h2 class="s">El cumplimiento no es una resta: es una <span class="grad">división entre real y meta</span></h2>
+  <div class="cuerpo">
+    <div class="g2" style="align-items:stretch">
+      <div class="card c" data-f="1" style="--c:var(--ver)"><h3>📈 Cuando más es mejor</h3><p>Ventas, satisfacción, capacitación…</p><div class="formula"><span>Real</span> ÷ <span>Meta</span> × 100</div>
+        <p style="color:#fff"><b>Ventas:</b> meta Bs 180.000 · real Bs 162.000<br>162.000 ÷ 180.000 = <b>90,0 %</b></p><div class="barra" style="--k:var(--ama);--w:90%"><i></i></div></div>
+      <div class="card c" data-f="2" style="--c:var(--cli)"><h3>📉 Cuando menos es mejor</h3><p>Tiempos, costos, reclamos, rotación…</p><div class="formula"><span>Meta</span> ÷ <span>Real</span> × 100</div>
+        <p style="color:#fff"><b>Atención:</b> meta 5 min · real 6,5 min<br>5 ÷ 6,5 = <b>76,9 %</b></p><div class="barra" style="--k:var(--rojo);--w:76.9%"><i></i></div></div>
+    </div>
+    <div data-f="3"><div class="sema">
+      <div style="--c:var(--ver)"><span class="luz"></span>Verde · 95 % o más</div><div style="--c:var(--ama)"><span class="luz"></span>Amarillo · de 80 % a 94,9 %</div><div style="--c:var(--rojo)"><span class="luz"></span>Rojo · menos de 80 %</div></div>
+      <p class="nota" style="margin-top:14px;text-align:center">¿Por qué en porcentaje? Porque «faltan Bs 18.000» y «sobran 1,5 minutos» no se pueden comparar; <b>90 % y 76,9 % sí</b>.</p></div>
+  </div>
+</section>
+
+<section class="sl" data-t="El tablero completo" data-n="08" style="--ac:var(--cli)" data-fn="tabla">
+  <div class="kicker"><i>08</i> El tablero completo de Café Tunari</div>
+  <h2 class="s" style="font-size:40px">Así se ve el <span class="grad">Cuadro de Mando Integral</span> terminado</h2>
+  <div class="cuerpo" style="margin-top:12px;justify-content:flex-start"><div id="tabla"></div></div>
+</section>
+
+<!-- ═══════════ 09 LEER EL TABLERO ═══════════ -->
+<section class="sl" data-t="Leer el tablero" data-n="09" style="--ac:var(--rojo)" data-fn="m5">
+  <div class="kicker"><i>09</i> Leer el tablero</div>
+  <h2 class="s">Del <span class="grad">síntoma</span> a la <span class="grad">causa de fondo</span>: pinta el mapa con el semáforo</h2>
+  <div class="cuerpo"><div class="mapag"><div id="mp5"></div>
+    <div class="lado">
+      <div class="paso" data-f="1"><i>1</i><div><b>Mira arriba: el síntoma</b>Rentabilidad y ventas en amarillo.</div></div>
+      <div class="paso" data-f="2"><i>2</i><div><b>Baja por las flechas</b>Clientes menos satisfechos y menos fieles.</div></div>
+      <div class="paso" data-f="3"><i>3</i><div><b>Sigue bajando</b>Tiempo de atención en <b style="color:var(--rojo)">rojo</b>: 6,5 min contra 5.</div></div>
+      <div class="paso" data-f="4" style="border-color:var(--rojo);box-shadow:0 0 40px -12px var(--rojo)"><i>4</i><div><b>Llega a la raíz</b>Solo 15 de 24 horas de capacitación: <b>la causa de fondo</b>.</div></div>
+    </div></div></div>
+</section>
+
+<section class="sl" data-t="Decidir" data-n="09" style="--ac:var(--ver)">
+  <div class="kicker"><i>09</i> Decidir con el tablero</div>
+  <h2 class="s">Las mejoras van donde está <span class="grad">la causa</span>, no donde se ve el síntoma</h2>
+  <div class="cuerpo">
+    <div class="g2 dec" style="align-items:stretch">
+      <div class="card c" data-f="1" style="--c:var(--rojo)"><span class="gr">❌</span><h3>«Hagamos un 2 × 1 para subir las ventas»</h3><p>Ataca el <b>síntoma</b>. Traerá más gente a una barra que ya atiende lento: más espera, menos satisfacción.</p></div>
+      <div class="card c" data-f="2" style="--c:var(--ver)"><span class="gr">✅</span><h3>«Capacitemos a los baristas y rediseñemos la barra»</h3><p>Ataca la <b>causa</b>. Mejora la raíz y el efecto sube solo por las flechas del mapa.</p></div>
+    </div>
+    <div data-f="3" style="margin-top:24px;text-align:center"><p class="nota" style="margin-bottom:6px">Una buena mejora se plantea con criterio <b>S.M.A.R.T.</b></p>
+      <span class="chip"><b>S</b> Específica</span><span class="chip"><b>M</b> Medible</span><span class="chip"><b>A</b> Alcanzable</span><span class="chip"><b>R</b> Relevante para el caso</span><span class="chip"><b>T</b> Con plazo</span>
+      <p class="frase" style="margin-top:16px;font-size:29px">«Dictar 24 horas de capacitación en preparación rápida a los 8 baristas <em>hasta el 30 de junio</em>, a cargo de la jefa de barra.»</p></div>
+  </div>
+</section>
+
+<!-- ═══════════ 10 RESUMEN ═══════════ -->
+<section class="sl" data-t="Resumen" data-n="10" style="--ac:var(--nar)">
+  <div class="kicker"><i>10</i> Para llevar</div>
+  <h2 class="s">El CMI en <span class="grad">seis ideas</span></h2>
+  <div class="cuerpo">
+    <div class="g2" style="gap:18px 26px">
+      <div class="card idea" data-f="1"><i>✈️</i><p>Las finanzas solas son un solo instrumento: avisan tarde.</p></div>
+      <div class="card idea" data-f="1"><i>🧩</i><p>Cuatro perspectivas: financiera, clientes, procesos y aprendizaje.</p></div>
+      <div class="card idea" data-f="1"><i>🌳</i><p>Se diseña de arriba abajo y se lee de abajo arriba.</p></div>
+      <div class="card idea" data-f="2"><i>🗺️</i><p>El mapa une los objetivos con flechas de causa y efecto hasta un final financiero.</p></div>
+      <div class="card idea" data-f="2"><i>🚦</i><p>Cada objetivo lleva indicador, meta, cumplimiento y semáforo.</p></div>
+      <div class="card idea" data-f="2"><i>🩺</i><p>Se diagnostica del síntoma a la causa, y allí se actúa.</p></div>
+    </div>
+    <p class="nota" data-f="2" style="margin-top:26px;text-align:center">Fuentes: Kaplan, R. y Norton, D. (1992). <i>The Balanced Scorecard</i>, Harvard Business Review · (1996). <i>Cuadro de Mando Integral</i> · (2004). <i>Mapas estratégicos</i>.</p>
+  </div>
+</section>
+
+</div></div>
+
+<div id="gira">📱 Gira el teléfono: esta presentación está hecha para pantalla horizontal</div>
+<nav id="nav"><button id="bAnt" type="button" aria-label="Anterior">←</button><span id="tit"></span><div id="pts"></div><span id="cnt"></span><button id="bFs" type="button" aria-label="Pantalla completa" title="Pantalla completa (F)">⛶</button><button id="bSig" type="button" aria-label="Siguiente">→</button></nav>
+
+<script>
+'use strict';
+const $ = (s, r) => (r || document).querySelector(s), $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+const QUIETO = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function num(x, d) { const s = (d === undefined ? String(x) : x.toFixed(d)).split('.'); return s[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (s[1] ? ',' + s[1] : ''); }
+
+/* ══════════ Datos del ejemplo: Café Tunari ══════════ */
+const PERS = {F: ['Financiera', 'var(--fin)', '💰'], C: ['Clientes', 'var(--cli)', '🤝'], P: ['Procesos internos', 'var(--pro)', '⚙️'], A: ['Aprendizaje y crecimiento', 'var(--apr)', '🌱']};
+// s: '+' más es mejor · '-' menos es mejor
+const OBJ = [
+  {id: 'F1', p: 'F', o: 'Incrementar los ingresos por ventas', ind: 'Ventas mensuales', u: 'Bs', meta: 180000, real: 162000, s: '+', ini: 'Combos de desayuno'},
+  {id: 'F2', p: 'F', o: 'Mejorar la rentabilidad', ind: 'Margen neto', u: '%', meta: 15, real: 12.6, s: '+', ini: 'Control de costos por taza'},
+  {id: 'C1', p: 'C', o: 'Aumentar la satisfacción del cliente', ind: 'Calificación en la encuesta (1 a 5)', u: 'pts', meta: 4.5, real: 4.1, s: '+', ini: 'Encuesta por QR en mesa'},
+  {id: 'C2', p: 'C', o: 'Fidelizar a los clientes frecuentes', ind: 'Clientes que vuelven en el mes', u: '%', meta: 40, real: 34, s: '+', ini: 'Tarjeta de cliente frecuente'},
+  {id: 'P1', p: 'P', o: 'Reducir el tiempo de atención', ind: 'Minutos promedio por pedido', u: 'min', meta: 5, real: 6.5, s: '-', ini: 'Rediseño de la barra'},
+  {id: 'P2', p: 'P', o: 'Asegurar la calidad de cada taza', ind: 'Pedidos sin devolución ni reclamo', u: '%', meta: 98, real: 96, s: '+', ini: 'Recetas estandarizadas'},
+  {id: 'A1', p: 'A', o: 'Fortalecer las competencias de los baristas', ind: 'Horas de capacitación por barista', u: 'h', meta: 24, real: 15, s: '+', ini: 'Escuela de baristas'},
+  {id: 'A2', p: 'A', o: 'Retener al personal clave', ind: 'Rotación de personal en el semestre', u: '%', meta: 10, real: 12, s: '-', ini: 'Plan de incentivos'}
+];
+const LINKS = [['A1', 'P1'], ['A1', 'P2'], ['A2', 'P2'], ['P1', 'C1'], ['P2', 'C1'], ['P2', 'C2'], ['C1', 'F1'], ['C2', 'F1'], ['F1', 'F2']];
+const cump = o => o.s === '+' ? o.real / o.meta * 100 : o.meta / o.real * 100;
+const color = p => p >= 95 ? ['var(--ver)', 'Verde'] : p >= 80 ? ['var(--ama)', 'Amarillo'] : ['var(--rojo)', 'Rojo'];
+const val = (x, u) => u === 'Bs' ? 'Bs ' + num(x) : num(x) + (u === '%' ? ' %' : ' ' + u);
+
+/* ══════════ Mapa estratégico (SVG de 1010 × 590) ══════════ */
+const MW = 1010, BH = 136, BY = {F: 0, C: 151, P: 302, A: 453}, NX = [170, 596], NW = 400, NH = 92;
+const pos = id => ({x: NX[+id[1] - 1], y: BY[id[0]] + (BH - NH) / 2});
+function mapa(el, sem) {
+  let h = `<svg class="mapa" viewBox="0 0 ${MW} 590"><defs><marker id="fl-${el}" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#fff"/></marker></defs>`;
+  for (const k of 'FCPA') h += `<g style="--c:${PERS[k][1]}"><rect class="bd" x="1" y="${BY[k] + 1}" width="${MW - 2}" height="${BH - 2}" rx="22"/><foreignObject x="14" y="${BY[k]}" width="150" height="${BH}"><div xmlns="http://www.w3.org/1999/xhtml" class="bl"><span>${PERS[k][2]}</span>${PERS[k][0]}</div></foreignObject></g>`;
+  for (const [a, b] of LINKS) {
+    const A = pos(a), B = pos(b); let d;
+    if (a[0] === b[0]) d = `M${A.x + NW} ${A.y + NH / 2}L${B.x - 8} ${B.y + NH / 2}`;
+    else { const k = (+b[1] - +a[1]) * 74, x1 = A.x + NW / 2 + k, x2 = B.x + NW / 2 - k, y1 = A.y, y2 = B.y + NH + 8, m = (y1 + y2) / 2; d = `M${x1} ${y1}C${x1} ${m} ${x2} ${m} ${x2} ${y2}`; }
+    h += `<path class="l" pathLength="1" data-l="${a}-${b}" d="${d}" marker-end="url(#fl-${el})"/>`;
+  }
+  for (const o of OBJ) {
+    const P = pos(o.id), p = cump(o), c = color(p);
+    h += `<g class="n${sem ? ' sem' : ''}" data-n="${o.id}" style="--c:${PERS[o.p][1]};--s:${c[0]}"><rect x="${P.x}" y="${P.y}" width="${NW}" height="${NH}" rx="18"/><foreignObject x="${P.x}" y="${P.y}" width="${NW}" height="${NH}"><div xmlns="http://www.w3.org/1999/xhtml" class="nt"><i>${o.id}</i><span>${o.o}${sem ? `<small>● ${num(p, 1)} % · ${c[1]}</small>` : ''}</span></div></foreignObject></g>`;
+  }
+  h += `<text class="et" data-e="fin" x="${NX[1] + NW - 6}" y="${BY.F + 17}" text-anchor="end" style="fill:#ffc24b">🏁 OBJETIVO FINAL</text><text class="et" data-e="base" x="${NX[0] + 6}" y="${BY.A + BH - 5}" style="fill:#4ade80">🌱 OBJETIVOS DE PARTIDA</text></svg>`;
+  $('#' + el).innerHTML = h;
+}
+// vis: ids visibles ('*' = todos) · fl: flechas dibujadas · hi: camino resaltado · marca: {id: clase}
+function ver(el, o) {
+  const r = $('#' + el), todos = OBJ.map(x => x.id), vis = o.vis === '*' ? todos : o.vis || [], fl = o.fl === '*' ? LINKS.map(l => l.join('-')) : o.fl || [], hi = o.hi || null;
+  $$('.n', r).forEach(n => { const id = n.dataset.n; n.classList.toggle('off', !vis.includes(id)); n.classList.toggle('hi', !!hi && hi.includes(id)); n.classList.toggle('dim', !!hi && !hi.includes(id)); ['fin', 'base'].forEach(c => n.classList.toggle(c, (o.marca || {})[id] === c)); });
+  $$('.l', r).forEach(l => { const k = l.dataset.l, [a, b] = k.split('-'), enCamino = !!hi && hi.includes(a) && hi.includes(b) && hi.indexOf(b) === hi.indexOf(a) + 1; l.classList.toggle('v', fl.includes(k)); l.classList.toggle('hi', enCamino); l.classList.toggle('dim', !!hi && !enCamino); });
+  $$('.et', r).forEach(t => t.classList.toggle('v', Object.values(o.marca || {}).includes(t.dataset.e)));
+}
+['mp0', 'mp1', 'mp2', 'mp3', 'mp4'].forEach(e => mapa(e, false)); mapa('mp5', true);
+const de = k => OBJ.filter(o => k.includes(o.p)).map(o => o.id), flDe = k => LINKS.filter(l => k.includes(l[0][0] + l[1][0])).map(l => l.join('-'));
+const C1 = ['A1', 'P1', 'C1', 'F1', 'F2'], C2 = ['A2', 'P2', 'C2', 'F1', 'F2'];
+const FN = {
+  avion(s) { $('#monte').classList.toggle('v', s >= 1); $('#cielo2').classList.toggle('alerta', s >= 1 && !QUIETO); $('#rot').textContent = s >= 1 ? '😱 «¿¡Y esa montaña!?»' : '😌 «Vamos a 850 km/h: todo perfecto»'; },
+  balanza(s) { $('#balanza').classList.toggle('ok', s >= 1); },
+  m0() { ver('mp0', {vis: '*', fl: '*'}); },
+  m1(s) { ver('mp1', {vis: de(['', 'F', 'FC', 'FCP', 'FCPA'][s])}); },
+  m2(s) { ver('mp2', {vis: '*', marca: Object.assign({}, s >= 1 ? {F2: 'fin'} : {}, s >= 2 ? {A1: 'base', A2: 'base'} : {})}); },
+  m3(s) { ver('mp3', {vis: '*', fl: flDe([[], ['AP'], ['AP', 'PC'], ['AP', 'PC', 'CF'], ['AP', 'PC', 'CF', 'FF']][s])}); },
+  m4(s) { ver('mp4', {vis: '*', fl: '*', hi: s === 1 ? C1 : s === 2 ? C2 : null}); },
+  m5(s) { ver('mp5', {vis: '*', fl: '*', hi: [null, ['F1', 'F2'], ['C1', 'C2', 'F1', 'F2'], ['P1', 'C1', 'F1', 'F2'], C1][s]}); },
+  tabla() {}
+};
+// Tabla del tablero completo
+$('#tabla').innerHTML = '<table class="tb"><thead><tr><th style="width:186px">Perspectiva</th><th style="width:272px">Objetivo</th><th style="width:262px">Indicador</th><th style="width:132px">Meta</th><th style="width:132px">Real</th><th style="width:100px">Cumpl.</th><th style="width:150px">Semáforo</th><th>Iniciativa</th></tr></thead><tbody>' +
+  OBJ.map(o => { const p = cump(o), c = color(p); return `<tr data-f="${'FCPA'.indexOf(o.p) + 1}" style="--c:${PERS[o.p][1]}"><td>${PERS[o.p][2]} ${o.p === 'A' ? 'Aprendizaje' : o.p === 'P' ? 'Procesos' : PERS[o.p][0]}</td><td><b>${o.o}</b></td><td>${o.ind}${o.s === '-' ? ' <b style="color:var(--cli)">▼</b>' : ''}</td><td class="n">${val(o.meta, o.u)}</td><td class="n">${val(o.real, o.u)}</td><td class="n">${num(p, 1)} %</td><td><span class="pill" style="--s:${c[0]}"><span class="luz" style="--c:${c[0]}"></span>${c[1]}</span></td><td>${o.ini}</td></tr>`; }).join('') + '</tbody></table><p class="nota" data-f="3" style="font-size:21px;margin-top:6px"><b style="color:var(--cli)">▼</b> = menos es mejor: su cumplimiento es meta ÷ real. En los demás, real ÷ meta.</p>';
+
+/* ══════════ Fondo: estrellas con salto al cambiar de diapositiva ══════════ */
+let warp = 0;
+(function () {
+  const c = $('#cielo'), x = c.getContext('2d'); let W, H, st = [];
+  function tam() { W = c.width = innerWidth; H = c.height = innerHeight; st = Array.from({length: Math.min(260, W * H / 6500 | 0)}, () => ({x: (Math.random() - .5) * W, y: (Math.random() - .5) * H, z: Math.random() * W})); if (QUIETO) cuadro(); }
+  function cuadro() {
+    x.fillStyle = 'rgba(5,7,19,' + (warp > .3 ? .28 : 1) + ')'; x.fillRect(0, 0, W, H);
+    for (const s of st) {
+      s.z -= 0.35 + warp * 26; if (s.z < 1) { s.z = W; s.x = (Math.random() - .5) * W; s.y = (Math.random() - .5) * H; }
+      const k = 260 / s.z, px = s.x * k + W / 2, py = s.y * k + H / 2, r = Math.max(.4, 1.9 - s.z / W * 1.7);
+      if (px < 0 || px > W || py < 0 || py > H) continue;
+      x.fillStyle = 'rgba(210,225,255,' + (1 - s.z / W) + ')'; x.fillRect(px, py, r + warp * 2.4, r);
+    }
+    warp *= .93;
+  }
+  addEventListener('resize', tam); tam(); if (!QUIETO) (function loop() { cuadro(); requestAnimationFrame(loop); })();
+  $('#flot').innerHTML = ['💰', '🤝', '⚙️', '🌱', '📊', '🎯', '🚦', '🗺️', '📈', '🧭'].map((e, i) => `<span style="left:${4 + i * 9.6}%;animation-duration:${26 + (i * 7) % 19}s;animation-delay:-${(i * 5.3) % 30}s">${e}</span>`).join('');
+})();
+
+/* ══════════ Motor de diapositivas ══════════ */
+const SL = $$('.sl'), PASOS = SL.map(s => Math.max(0, ...$$('[data-f],[data-k]', s).map(e => +(e.dataset.f || e.dataset.k)))), esc = $('#esc');
+let i = 0, st = 0, kEsc = 1;
+$('#pts').innerHTML = SL.map((s, k) => `<i data-i="${k}" title="${s.dataset.t}"></i>`).join('');
+function escala() { kEsc = Math.min(innerWidth / 1600, innerHeight / 900); inclina(0, 0); }
+function inclina(rx, ry) { esc.style.transform = `translate(-50%,-50%) scale(${kEsc}) rotateX(${rx}deg) rotateY(${ry}deg)`; }
+function pinta(salto) {
+  SL.forEach((s, k) => { s.classList.toggle('on', k === i); s.classList.toggle('antes', k < i); });
+  const s = SL[i]; $$('[data-f],[data-k]', s).forEach(e => e.classList.toggle('v', +(e.dataset.f || e.dataset.k) <= st));
+  if (s.dataset.fn) FN[s.dataset.fn](st, s);
+  document.body.style.setProperty('--ac', getComputedStyle(s).getPropertyValue('--ac') || 'var(--nar)');
+  $('#tit').textContent = (s.dataset.n ? s.dataset.n + ' · ' : '') + s.dataset.t; $('#cnt').textContent = (i + 1) + ' / ' + SL.length;
+  $$('#pts i').forEach((p, k) => { p.classList.toggle('a', k === i); p.classList.toggle('h', k < i); });
+  if (salto && !QUIETO) warp = 1;
+  try { history.replaceState(null, '', '#' + (i + 1) + (st ? '.' + st : '')); } catch (e) {}
+}
+function sig() { if (st < PASOS[i]) { st++; pinta(); } else if (i < SL.length - 1) { i++; st = 0; pinta(true); } }
+function ant() { if (st > 0) { st--; pinta(); } else if (i > 0) { i--; st = PASOS[i]; pinta(true); } }
+function ir(k, p) { i = Math.max(0, Math.min(SL.length - 1, k)); st = Math.max(0, Math.min(PASOS[i], p || 0)); pinta(true); }
+function completa() { const d = document; if (d.fullscreenElement) d.exitFullscreen(); else if (d.documentElement.requestFullscreen) d.documentElement.requestFullscreen().catch(() => {}); }
+addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return; const k = e.key;
+  if (['ArrowRight', 'PageDown', ' ', 'Enter', 'ArrowDown'].includes(k)) { e.preventDefault(); sig(); }
+  else if (['ArrowLeft', 'PageUp', 'Backspace', 'ArrowUp'].includes(k)) { e.preventDefault(); ant(); }
+  else if (k === 'Home') ir(0); else if (k === 'End') ir(SL.length - 1, 99); else if (k === 'f' || k === 'F') completa();
+});
+$('#bSig').onclick = sig; $('#bAnt').onclick = ant; $('#bFs').onclick = completa;
+$('#pts').onclick = e => { const p = e.target.closest('i'); if (p) ir(+p.dataset.i); };
+$('#marco').addEventListener('click', e => { if (e.clientX < innerWidth * .18) ant(); else sig(); });
+let tx = null; addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
+addEventListener('touchend', e => { if (tx === null) return; const d = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(d) > 50) { d < 0 ? sig() : ant(); } }, {passive: true});
+if (!QUIETO) addEventListener('pointermove', e => { if (e.pointerType === 'mouse') inclina((e.clientY / innerHeight - .5) * -1.6, (e.clientX / innerWidth - .5) * 2.2); });
+addEventListener('resize', escala); escala();
+const h0 = location.hash.slice(1).split('.'); ir((+h0[0] || 1) - 1, +h0[1] || 0);
+</script>
+</body>
+</html>
